@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Okay But Like… 💅🏻</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Poppins,sans-serif;
+  background:linear-gradient(-45deg,#ffafbd,#ffc3a0,#fbc2eb,#a6c1ee);
+  background-size:400% 400%;
+  animation:bg 14s ease infinite;
+  overflow:hidden;
+}
+
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.card{
+  width:min(94%,420px);
+  padding:44px 26px 48px;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(18px);
+  border-radius:32px;
+  text-align:center;
+  position:relative;
+  box-shadow:0 35px 90px rgba(0,0,0,.25);
+}
+
+.emoji{
+  font-size:64px;
+  margin-bottom:16px;
+  animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.12)}
+}
+
+h2{
+  font-family:"Playfair Display",serif;
+  font-size:26px;
+  color:#4a1c2f;
+  line-height:1.45;
+  margin-bottom:34px;
+}
+
+.buttons{
+  position:relative;
+  height:200px;
+}
+
+button{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width:88%;
+  padding:16px 18px;
+  border:none;
+  border-radius:50px;
+  font-size:16px;
+  font-weight:500;
+  cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.15);
+  transition:transform .6s cubic-bezier(.22,.61,.36,1);
+}
+
+#yes{
+  top:0;
+  background:linear-gradient(135deg,#ff6a88,#ff99ac);
+  color:#fff;
+}
+
+#no{
+  top:100px;
+  background:#fff;
+  color:#777;
+}
+
+.hint{
+  margin-top:30px;
+  font-size:13px;
+  color:#6b6b6b;
+  font-style:italic;
+}
+
+.heart{
+  position:absolute;
+  bottom:-20px;
+  animation:float linear forwards;
+  pointer-events:none;
+}
+
+@keyframes float{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-120vh);opacity:0}
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+
+.message{
+  background:#fff;
+  padding:38px 42px;
+  border-radius:26px;
+  text-align:center;
+}
+
+.message h3{
+  font-family:"Playfair Display",serif;
+  color:#ff6a88;
+  font-size:26px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="emoji">💅🏻😏</div>
+
+  <h2>
+    Babygur💅🏻<br>
+    Be my Valentine,<br> I promise I’m only slightly annoying.
+  </h2>
+
+  <div class="buttons" id="buttons">
+    <button id="yes">Fine 🙄💖 I’m in</button>
+    <button id="no">Try ME...huh💅🏻</button>
+  </div>
+
+  <div class="hint">
+    Warning: excessive cuteness ahead 😌
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="message">
+    <h3>Beewwkkkuuuuffffffff😌💖</h3>
+    <p>You already are my Gurlfriend...huhh💅🏻</p>
+  </div>
+</div>
+
+<audio id="hoverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-voice-laugh-343.mp3"></audio>
+<audio id="yesSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const buttons = document.getElementById("buttons");
+const overlay = document.getElementById("overlay");
+const hoverSound = document.getElementById("hoverSound");
+const yesSound = document.getElementById("yesSound");
+
+let noIndex = 0;
+
+/* ALL SASSY + CUTE (10 TOTAL) */
+const sassyNos = [
+  "Try ME...huh💅🏻",
+  "Hawww🥺",
+  "You ungreatfull Potato🌷",
+  "Excuse YOU?? 😤",
+  "Wow...juss wow🙄",
+  "Bold of you to try 😏",
+  "Stop being cute rn 😒",
+  "My attitude says no 💅🏻",
+  "Why are you like this 😭",
+  "Please stop now😭✋🏻"
+];
+
+function moveNo(){
+  const container = buttons.getBoundingClientRect();
+  const btn = noBtn.getBoundingClientRect();
+
+  const maxX = (container.width - btn.width) / 2;
+  const minY = 40;
+  const maxY = container.height - btn.height - 10;
+
+  const x = (Math.random() * 2 - 1) * maxX;
+  const y = Math.random() * (maxY - minY) + minY;
+
+  noBtn.style.transform =
+    `translate(-50%, 0) translate(${x}px, ${y}px)`;
+
+  if(noIndex < sassyNos.length){
+    noBtn.textContent = sassyNos[noIndex++];
+  }
+
+  hoverSound.currentTime = 0;
+  hoverSound.play();
+  if(navigator.vibrate) navigator.vibrate(20);
+}
+
+/* Touch-first */
+noBtn.addEventListener("touchstart", e=>{
+  e.preventDefault();
+  moveNo();
+},{passive:false});
+
+/* Desktop fallback */
+noBtn.addEventListener("click", moveNo);
+
+yesBtn.addEventListener("click", ()=>{
+  yesSound.play();
+  if(window.confetti){
+    confetti({particleCount:320,spread:160,origin:{y:.6}});
+  }
+  setTimeout(()=>overlay.style.display="flex",500);
+});
+
+function heart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=Math.random()>.5?"💖":"💞";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=Math.random()*22+14+"px";
+  h.style.animationDuration=Math.random()*3+4+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),7000);
+}
+setInterval(heart,450);
+</script>
+
+</body>
+</html>
